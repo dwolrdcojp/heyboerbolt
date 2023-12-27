@@ -6,8 +6,6 @@ import { auth } from "../..//utils/auth";
 import { cache } from "react";
 
 const itemFormSchema = z.object({
-  createdBy: z.string(),
-  createdAt: z.date(),
   updatedBy: z.string().optional(),
   updatedAt: z.date().optional(),
   name: z.string().min(2).max(50),
@@ -24,7 +22,6 @@ const itemFormSchema = z.object({
 type PrevState = { message: null | string };
 
 export async function updateItem(prevState: PrevState, formData: FormData) {
-  console.log("HITTT 2?");
   try {
     const session = await auth();
     const userId = session?.user?.name;

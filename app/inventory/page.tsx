@@ -1,31 +1,56 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getItems } from "./actions";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default async function Inventory() {
   const items = await getItems();
   return (
-    <div>
-      <div className="flex flex-col space-y-8 lg:flex-row lg-space-x-12 lg:space-y-0">
-        <div className="flex-1 m-6 lg:max-w-2xl">
-          <h1> Inventory </h1>
+    <div className="grid p-4">
+      <div className="grid grid-cols-2 my-4">
+        <div className="cols-1">
+          <h1 className=""> Inventory </h1>
+        </div>
 
+        <div className="cols-1 justify-self-end">
           <Button asChild>
             <Link href="/inventory/new">New Item</Link>
           </Button>
-
-          {items &&
-            items.map((item, index) => {
-              return (
-                <div key={index}>
-                  <Link href={`/inventory/${item.id}`}>{item.id}</Link>
-                  <p>{item.sku}</p>
-                  <p>{item.name}</p>
-                </div>
-              );
-            })}
         </div>
       </div>
+
+      {items &&
+        items.map((item, index) => {
+          return (
+            <div>
+              <Card key={index} className="my-2">
+                <CardHeader>
+                  <CardTitle>
+                    <Link href={`/inventory/${item.id}`}>{item.name}</Link>
+                  </CardTitle>
+                  <CardDescription>SKU: {item?.sku}</CardDescription>
+                </CardHeader>
+                <CardContent key={index}>
+                  <p>Quantity: {item.quantity}</p>
+                  <p>Min Level: {item.minLevel}</p>
+                  <p>Value: {item.value}</p>
+                  <p>Location: {item.location}</p>
+                  <p>Type: {item.type}</p>
+                </CardContent>
+                <CardFooter>
+                  <p>Tags: {item.tags}</p>
+                </CardFooter>
+              </Card>
+            </div>
+          );
+        })}
     </div>
   );
 }

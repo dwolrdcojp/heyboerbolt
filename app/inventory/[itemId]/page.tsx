@@ -1,6 +1,14 @@
 import { getItem, getItems } from "../actions";
 import UpdateItemForm from "./update-item-form";
 import { Separator } from "@/components/ui/separator";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export async function generateStaticParams() {
   const items = await getItems();
