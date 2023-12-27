@@ -12,18 +12,18 @@ datasource db {
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -54,4 +54,23 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Item {
+  id        String    @id @default(cuid())
+  createdBy String
+  createdAt DateTime
+  updatedBy String?
+  updatedAt DateTime?
+  name      String
+  sku       String?   @unique
+  quantity  Int?
+  minLevel  Int?
+  value     Int?
+  location  String?
+  type      String?
+  tags      String?
+  notes     String?
+  image     String?
+  barcode   String?
 }

@@ -5,9 +5,6 @@ export default async function Dashboard() {
   return (
     <div>
       <h1> Dashboard </h1>
-      <Button asChild>
-        <Link href="/inventory">Inventory</Link>
-      </Button>
     </div>
   );
 }
