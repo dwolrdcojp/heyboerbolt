@@ -59,8 +59,13 @@ export async function createItem(prevState: PrevState, formData: FormData) {
     return {
       message: `Successfully added ${resp.name}`,
     };
-  } catch (e) {
-    console.log(e);
-    return { message: "Server Error: Failed to create" };
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      console.log(e);
+      return { message: `Server Error: Failed to create: ${e.message}` };
+    } else {
+      console.log(e);
+      return { message: "Unknown Server Error: Failed to create." };
+    }
   }
 }

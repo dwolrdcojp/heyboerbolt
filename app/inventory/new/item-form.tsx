@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
 import * as z from "zod";
 import { TagsInput } from "./tags-input";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -57,10 +57,10 @@ export default function ItemForm() {
     const valid = await form.trigger();
     if (!valid) return;
     const formValues = form.getValues() as ItemFormValues;
-    console.log("formValues", formValues);
     const tempFormData = new FormData();
     for (const [key, value] of Object.entries(formValues)) {
       if (typeof value !== "undefined") {
+        // Handle tags array
         if (Array.isArray(value)) {
           const flattenedArray = value.join(",");
           tempFormData.set(key, flattenedArray);
@@ -69,18 +69,16 @@ export default function ItemForm() {
         tempFormData.set(key, value.toString());
       }
     }
-    console.log("tempFormData", tempFormData.get("tags"));
     return await formAction(tempFormData);
   };
 
   function onSubmit() {
-    toast({
-      title: "New downtime event added:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{state.message}</code>
-        </pre>
-      ),
+    toast(`${state.message}`, {
+      description: new Date(Date.now()).toString(),
+      action: {
+        label: "Ok",
+        onClick: () => console.log("Ok"),
+      },
     });
   }
 

@@ -13,8 +13,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { ThemeSwitcher } from "@/components/theme-switcher";
-import { Toaster as DefaultToaster } from "@/components/ui/toaster";
-import { Toaster as NewYorkSonner } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: {
@@ -108,8 +107,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             <TailwindIndicator />
             <ThemeSwitcher />
             <Analytics />
-            <DefaultToaster />
-            <NewYorkSonner />
+            <Toaster />
           </ThemeProvider>
         </body>
       </html>
