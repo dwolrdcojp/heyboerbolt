@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
 import * as z from "zod";
 import { TagsInput } from "./tags-input";
-
+import { toast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,8 +17,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useState, useEffect } from "react";
+import { useFormState } from "react-dom";
+import { createItem } from "../actions";
 
-const formSchema = z.object({
+const itemFormSchema = z.object({
   name: z.string().min(2).max(50),
   sku: z.string().min(2).max(50).optional(),
   quantity: z.coerce.number().min(1),
@@ -30,9 +33,15 @@ const formSchema = z.object({
   notes: z.string().min(0).max(500).optional(),
 });
 
+const initialState = { message: "" };
+
+export type ItemFormValues = z.infer<typeof itemFormSchema>;
+
 export default function ItemForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const [state, formAction] = useFormState(createItem, initialState);
+
+  const form = useForm<z.infer<typeof itemFormSchema>>({
+    resolver: zodResolver(itemFormSchema),
     defaultValues: {
       name: "",
       quantity: undefined,
@@ -40,17 +49,51 @@ export default function ItemForm() {
       value: undefined,
       location: "",
       type: "",
-      tags: [""],
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  const myAction = async (formData: FormData) => {
+    // Hack to make form work with react-hook-form
+    const valid = await form.trigger();
+    if (!valid) return;
+    const formValues = form.getValues() as ItemFormValues;
+    console.log("formValues", formValues);
+    const tempFormData = new FormData();
+    for (const [key, value] of Object.entries(formValues)) {
+      if (typeof value !== "undefined") {
+        if (Array.isArray(value)) {
+          const flattenedArray = value.join(",");
+          tempFormData.set(key, flattenedArray);
+          continue;
+        }
+        tempFormData.set(key, value.toString());
+      }
+    }
+    console.log("tempFormData", tempFormData.get("tags"));
+    return await formAction(tempFormData);
+  };
+
+  function onSubmit() {
+    toast({
+      title: "New downtime event added:",
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{state.message}</code>
+        </pre>
+      ),
+    });
   }
+
+  useEffect(() => {
+    if (state?.message) {
+      onSubmit();
+    }
+  }, [state]);
+
   return (
     <div className="grid gap-6">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form action={myAction} className="space-y-8">
           <FormField
             control={form.control}
             name="name"
@@ -185,7 +228,7 @@ export default function ItemForm() {
               <FormItem>
                 <FormLabel>Tags</FormLabel>
                 <FormControl>
-                  <TagsInput control={form.control} name="tags" />
+                  <TagsInput name="tags" control={form.control} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

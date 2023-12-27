@@ -1,4 +1,4 @@
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, useFormContext } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -7,14 +7,17 @@ export const TagsInput = ({ control, name }) => {
     control,
     name,
   });
+  const { setValue } = useFormContext();
 
   const addTag = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault(); // This will prevent the form from being submitted.
-      if (e.target.value.trim() !== "") {
-        append({ label: e.target.value.trim() });
-        e.target.value = "";
-      }
+    if (e.key === "Enter" && e.target.value.trim() !== "") {
+      e.preventDefault();
+      append({ label: e.target.value.trim() }); // append the new tag to the field array
+      setValue(name, [
+        ...fields.map((field) => field.label),
+        e.target.value.trim(),
+      ]); // update the form value
+      e.target.value = ""; // Clear the input
     }
   };
 
