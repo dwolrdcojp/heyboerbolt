@@ -2,7 +2,7 @@
 import prisma from "@/prisma/prisma";
 import * as z from "zod";
 import { revalidatePath } from "next/cache";
-import { auth } from "../utils/auth";
+import { auth } from "../..//utils/auth";
 import { cache } from "react";
 
 const itemFormSchema = z.object({
@@ -21,35 +21,18 @@ const itemFormSchema = z.object({
   notes: z.string().min(0).max(500).optional(),
 });
 
-export type ItemFormValues = z.infer<typeof itemFormSchema>;
-
-export const getItems = cache(async () => {
-  const items = await prisma.item.findMany();
-  return items;
-});
-
-export const getItem = cache(async (id: string) => {
-  const item = await prisma.item.findUnique({
-    where: {
-      id: id,
-    },
-  });
-  return item;
-});
-
 type PrevState = { message: null | string };
 
-export async function createItem(prevState: PrevState, formData: FormData) {
-  console.log("HIITT 1");
+export async function updateItem(prevState: PrevState, formData: FormData) {
+  console.log("HITTT 2?");
   try {
     const session = await auth();
     const userId = session?.user?.name;
+    const itemId = formData.get("itemId") as string;
 
     const parsed = itemFormSchema.parse({
-      createdBy: userId as string,
-      createdAt: new Date(Date.now()) as Date,
-      updatedBy: undefined,
-      updatedAt: undefined,
+      updatedBy: userId as string,
+      updatedAt: new Date(Date.now()) as Date,
       name: formData.get("name"),
       sku: formData.get("sku") || "",
       quantity: formData.get("quantity"),
@@ -61,22 +44,23 @@ export async function createItem(prevState: PrevState, formData: FormData) {
       notes: formData.get("notes") || "",
     });
 
-    const resp = await prisma.item.create({
+    const resp = await prisma.item.update({
+      where: { id: itemId as string },
       data: parsed,
     });
 
+    revalidatePath(`/inventory/${itemId}`);
     revalidatePath("/inventory");
     return {
-      message: `Successfully added ${resp.name}`,
+      message: `Successfully updated ${resp.name}`,
     };
   } catch (e: unknown) {
     if (e instanceof Error) {
       console.log(e);
-      return { message: `Server Error: Failed to create: ${e.message}` };
+      return { message: `Server Error: Failed to update: ${e.message}` };
     } else {
       console.log(e);
-      return { message: "Unknown Server Error: Failed to create." };
+      return { message: "Unknown Server Error: Failed to update." };
     }
   }
 }
-

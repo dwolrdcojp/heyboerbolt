@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
 import * as z from "zod";
-import { TagsInput } from "./tags-input";
+import { TagsInput } from "../new/tags-input";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect } from "react";
 import { useFormState } from "react-dom";
-import { createItem } from "../actions";
+import { updateItem } from "./actions";
 
 const itemFormSchema = z.object({
   name: z.string().min(2).max(50),
@@ -37,27 +37,35 @@ const initialState = { message: "" };
 
 export type ItemFormValues = z.infer<typeof itemFormSchema>;
 
-export default function ItemForm() {
-  const [state, formAction] = useFormState(createItem, initialState);
+export default function UpdateItemForm({ item }) {
+  const [state, updateAction] = useFormState(updateItem, initialState);
 
   const form = useForm<z.infer<typeof itemFormSchema>>({
     resolver: zodResolver(itemFormSchema),
     defaultValues: {
-      name: "",
-      quantity: 0,
-      value: 0,
-      location: "",
-      type: "",
+      name: item?.name || "",
+      sku: item?.sku || "",
+      quantity: item?.quantity || "",
+      minLevel: item?.minLevel || "",
+      value: item?.value || "",
+      location: item?.location || "",
+      type: item?.type || "",
+      tags:
+        item?.tags?.split(",").map((tag: string) => {
+          return { label: tag };
+        }) || "",
+      notes: item?.notes || "",
     },
   });
 
-  const myAction = async (formData: FormData) => {
+  const myUpdateAction = async (formData: FormData) => {
     // Hack to make form work with react-hook-form
     const valid = await form.trigger();
     if (!valid) return;
 
     const formValues = form.getValues() as ItemFormValues;
     const tempFormData = new FormData();
+    tempFormData.set("itemId", item.id as string);
 
     for (const [key, value] of Object.entries(formValues)) {
       if (typeof value !== "undefined") {
@@ -71,7 +79,7 @@ export default function ItemForm() {
         }
       }
     }
-    return await formAction(tempFormData);
+    return await updateAction(tempFormData);
   };
 
   function onSubmit() {
@@ -93,7 +101,7 @@ export default function ItemForm() {
   return (
     <div className="grid gap-6">
       <Form {...form}>
-        <form action={myAction} className="space-y-8">
+        <form action={myUpdateAction} className="space-y-8">
           <FormField
             control={form.control}
             name="name"
@@ -252,7 +260,7 @@ export default function ItemForm() {
               <Button variant="ghost">Cancel</Button>
             </div>
             <div className="cols-1 justify-self-end">
-              <Button type="submit">Submit</Button>
+              <Button type="submit">Update</Button>
             </div>
           </div>
         </form>

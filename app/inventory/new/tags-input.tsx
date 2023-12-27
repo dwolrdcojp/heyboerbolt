@@ -7,17 +7,15 @@ export const TagsInput = ({ control, name }) => {
     control,
     name,
   });
-  const { setValue } = useFormContext();
 
   const addTag = (e) => {
-    if (e.key === "Enter" && e.target.value.trim() !== "") {
-      e.preventDefault();
-      append({ label: e.target.value.trim() }); // append the new tag to the field array
-      setValue(name, [
-        ...fields.map((field) => field.label),
-        e.target.value.trim(),
-      ]); // update the form value
-      e.target.value = ""; // Clear the input
+    if (e.key === "Enter") {
+      const newTag = e.target.value.trim();
+      if (newTag !== "") {
+        e.preventDefault();
+        append({ label: newTag }); // Append the new tag to the field array
+        e.target.value = ""; // Clear the input
+      }
     }
   };
 

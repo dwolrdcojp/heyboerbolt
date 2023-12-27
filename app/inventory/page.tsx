@@ -15,10 +15,10 @@ export default async function Inventory() {
           </Button>
 
           {items &&
-            items.map((item) => {
+            items.map((item, index) => {
               return (
-                <div>
-                  <p>{item.id}</p>
+                <div key={index}>
+                  <Link href={`/inventory/${item.id}`}>{item.id}</Link>
                   <p>{item.sku}</p>
                   <p>{item.name}</p>
                 </div>
