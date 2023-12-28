@@ -20,6 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect } from "react";
 import { useFormState } from "react-dom";
 import { createItem } from "../actions";
+import Link from "next/link";
 
 const itemFormSchema = z.object({
   name: z.string().min(2).max(50),
@@ -249,7 +250,9 @@ export default function ItemForm() {
           />
           <div className="grid grid-cols-2">
             <div className="cols-1">
-              <Button variant="ghost">Cancel</Button>
+              <Button variant="ghost" asChild>
+                <Link href="/inventory">Cancel</Link>
+              </Button>
             </div>
             <div className="cols-1 justify-self-end">
               <Button type="submit">Submit</Button>

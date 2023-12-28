@@ -16,13 +16,15 @@ export function MainNav() {
   return (
     <div className="mr-4 hidden md:flex">
       <Link href="/" className="mr-6 flex items-center space-x-2">
-        <Image
-          className="h-6 w-6"
-          src="/hb-logo-vertical-white.png"
-          width={60}
-          height={60}
-          alt="Logo"
-        />
+        <div className="bg-foreground dark:bg-black m-1 border-0 rounded">
+          <Image
+            className="h-12 w-12 p-1"
+            src="/hb-logo-vertical-white.png"
+            width={80}
+            height={80}
+            alt="Logo"
+          />
+        </div>
         <span className="hidden font-bold sm:inline-block">
           {siteConfig.name}
         </span>
