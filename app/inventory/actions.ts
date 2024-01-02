@@ -40,7 +40,6 @@ export const getItem = cache(async (id: string) => {
 type PrevState = { message: null | string };
 
 export async function createItem(prevState: PrevState, formData: FormData) {
-  console.log("HIITT 1");
   try {
     const session = await auth();
     const userId = session?.user?.name;
@@ -79,4 +78,3 @@ export async function createItem(prevState: PrevState, formData: FormData) {
     }
   }
 }
-
