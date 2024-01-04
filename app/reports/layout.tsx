@@ -4,8 +4,8 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Inventory",
-  description: "Inventory items",
+  title: "Reports",
+  description: "Custom inventory reports.",
 };
 
 interface ExamplesLayoutProps {

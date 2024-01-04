@@ -21,6 +21,8 @@ import { useState, useEffect } from "react";
 import { useFormState } from "react-dom";
 import { createItem } from "../actions";
 import Link from "next/link";
+import CurrencyInput from "react-currency-input-field";
+import { StyledCurrencyInput } from "../components/styled-currency-input";
 
 const itemFormSchema = z.object({
   name: z.string().min(2).max(50),
@@ -169,7 +171,16 @@ export default function ItemForm() {
               <FormItem>
                 <FormLabel>Value</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="$100.00" {...field} />
+                  <StyledCurrencyInput
+                    placeholder="$100.00"
+                    defaultValue={field.value}
+                    onValueChange={(value, name) => field.onChange(value)}
+                    decimalsLimit={2}
+                    fixedDecimalLength={2}
+                    onBlur={field.onBlur}
+                    prefix="$"
+                    ref={field.ref}
+                  />
                 </FormControl>
                 <FormDescription>
                   This is the value of one unit.

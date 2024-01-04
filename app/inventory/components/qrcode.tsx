@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 export function QRCodeImage({ item, qrCodeUrl }) {
+  const parsedItem = JSON.parse(item);
   const printElement = () => {
     const content = document?.getElementById("printableCard")?.innerHTML;
     const printWindow = window.open("", "", "");
@@ -72,9 +73,9 @@ export function QRCodeImage({ item, qrCodeUrl }) {
         <Card id="card" className="card m-2">
           <CardHeader>
             <CardTitle id="card-title" className="">
-              Item: {item.name}
+              Item: {parsedItem.name}
             </CardTitle>
-            <CardDescription>Type: {item.type}</CardDescription>
+            <CardDescription>Type: {parsedItem.type}</CardDescription>
           </CardHeader>
           <CardContent id="card-content">
             <Image
@@ -85,7 +86,9 @@ export function QRCodeImage({ item, qrCodeUrl }) {
               alt="qr code"
             />
           </CardContent>
-          <CardFooter>SKU: {item.sku ? item.sku : item.id}</CardFooter>
+          <CardFooter>
+            SKU: {parsedItem.sku ? parsedItem.sku : parsedItem.id}
+          </CardFooter>
         </Card>
       </div>
       <Button className="m-2" onClick={() => printElement()}>

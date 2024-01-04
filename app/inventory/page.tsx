@@ -20,6 +20,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { formatCurrency } from "../utils/functions";
 
 export default async function Inventory() {
   const items = await getItems();
@@ -62,10 +63,18 @@ export default async function Inventory() {
                         </div>
                         <div>
                           <p className="py-2">
-                            Item Value: {`$${item?.value}`}{" "}
+                            Item Value:{" "}
+                            {item?.value
+                              ? `${formatCurrency(item?.value)}`
+                              : "N/A"}
                           </p>
                           <p className="py-2">
-                            Total Value: {`$${item?.value * item?.quantity}`}
+                            Total Value:{" "}
+                            {item?.value && item?.quantity
+                              ? `${formatCurrency(
+                                  item?.value * item?.quantity,
+                                )}`
+                              : "N/A"}
                           </p>
                         </div>
                       </div>

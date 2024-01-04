@@ -4,6 +4,7 @@ import * as z from "zod";
 import { revalidatePath } from "next/cache";
 import { auth } from "../utils/auth";
 import { cache } from "react";
+import QRCode from "qrcode";
 
 const itemFormSchema = z.object({
   createdBy: z.string(),
@@ -39,11 +40,31 @@ export const getItem = cache(async (id: string) => {
 
 type PrevState = { message: null | string };
 
+const generateQR = async (text: string) => {
+  const opts = {
+    errorCorrectionLevel: "H",
+    type: "image/jpeg",
+    quality: 1,
+    margin: 1,
+    color: {
+      dark: "#000",
+      light: "#FFF",
+    },
+  };
+  try {
+    const url = await QRCode.toDataURL(text, opts);
+    return url;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 export async function createItem(prevState: PrevState, formData: FormData) {
   try {
     const session = await auth();
     const userId = session?.user?.name;
 
+    console.log(formData.get("value"));
     const parsed = itemFormSchema.parse({
       createdBy: userId as string,
       createdAt: new Date(Date.now()) as Date,
@@ -60,8 +81,19 @@ export async function createItem(prevState: PrevState, formData: FormData) {
       notes: formData.get("notes") || "",
     });
 
+    console.log(parsed.value);
+
     const resp = await prisma.item.create({
       data: parsed,
+    });
+
+    const qrCodeUrlData = await generateQR(
+      `${process.env.NEXT_PUBLIC_VERCEL_URL}/inventory/${resp.id}`,
+    );
+
+    const updateResp = await prisma.item.update({
+      where: { id: resp.id as string },
+      data: { barcode: qrCodeUrlData as string },
     });
 
     revalidatePath("/inventory");

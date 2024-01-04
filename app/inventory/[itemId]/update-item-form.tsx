@@ -21,6 +21,7 @@ import { useState, useEffect } from "react";
 import { useFormState } from "react-dom";
 import { updateItem } from "./actions";
 import Link from "next/link";
+import { StyledCurrencyInput } from "../components/styled-currency-input";
 
 const itemFormSchema = z.object({
   name: z.string().min(2).max(50),
@@ -40,22 +41,23 @@ export type ItemFormValues = z.infer<typeof itemFormSchema>;
 
 export default function UpdateItemForm({ item }) {
   const [state, updateAction] = useFormState(updateItem, initialState);
+  const parsedItem = JSON.parse(item);
 
   const form = useForm<z.infer<typeof itemFormSchema>>({
     resolver: zodResolver(itemFormSchema),
     defaultValues: {
-      name: item?.name || "",
-      sku: item?.sku || "",
-      quantity: item?.quantity || "",
-      minLevel: item?.minLevel || "",
-      value: item?.value || "",
-      location: item?.location || "",
-      type: item?.type || "",
+      name: parsedItem?.name || "",
+      sku: parsedItem?.sku || "",
+      quantity: parsedItem?.quantity || "",
+      minLevel: parsedItem?.minLevel || "",
+      value: parsedItem?.value || "",
+      location: parsedItem?.location || "",
+      type: parsedItem?.type || "",
       tags:
-        item?.tags?.split(",").map((tag: string) => {
+        parsedItem?.tags?.split(",").map((tag: string) => {
           return { label: tag };
         }) || "",
-      notes: item?.notes || "",
+      notes: parsedItem?.notes || "",
     },
   });
 
@@ -66,7 +68,7 @@ export default function UpdateItemForm({ item }) {
 
     const formValues = form.getValues() as ItemFormValues;
     const tempFormData = new FormData();
-    tempFormData.set("itemId", item.id as string);
+    tempFormData.set("itemId", parsedItem.id as string);
 
     for (const [key, value] of Object.entries(formValues)) {
       if (typeof value !== "undefined") {
@@ -177,7 +179,16 @@ export default function UpdateItemForm({ item }) {
               <FormItem>
                 <FormLabel>Value</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="$100.00" {...field} />
+                  <StyledCurrencyInput
+                    placeholder="$100.00"
+                    defaultValue={field.value}
+                    onValueChange={(value, name) => field.onChange(value)}
+                    decimalsLimit={2}
+                    fixedDecimalLength={2}
+                    onBlur={field.onBlur}
+                    prefix="$"
+                    ref={field.ref}
+                  />
                 </FormControl>
                 <FormDescription>
                   This is the value of one unit.

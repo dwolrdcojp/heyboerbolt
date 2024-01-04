@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Item" ALTER COLUMN "value" SET DATA TYPE DECIMAL(65,2);

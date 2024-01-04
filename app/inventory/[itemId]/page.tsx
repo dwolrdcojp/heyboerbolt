@@ -2,7 +2,6 @@
 import { getItem, getItems } from "../actions";
 import UpdateItemForm from "./update-item-form";
 import { Separator } from "@/components/ui/separator";
-import QRCode from "qrcode";
 
 import Image from "next/image";
 import {
@@ -25,33 +24,8 @@ export async function generateStaticParams() {
   }));
 }
 
-const generateQR = async (text: string) => {
-  const opts = {
-    errorCorrectionLevel: "H",
-    type: "image/jpeg",
-    quality: 1,
-    margin: 1,
-    color: {
-      dark: "#000",
-      light: "#FFF",
-    },
-  };
-  try {
-    const url = await QRCode.toDataURL(text, opts);
-    return url;
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 export default async function Page({ params }: { params: { itemId: string } }) {
-  const itemData = await getItem(params.itemId);
-  const qrCodeUrlData = await generateQR(
-    `${process.env.NEXT_PUBLIC_VERCEL_URL}/inventory/${params.itemId}`,
-  );
-
-
-  const [item, qrCodeUrl] = await Promise.all([itemData, qrCodeUrlData]);
+  const item = await getItem(params.itemId);
 
   return (
     <div className="space-y-6 m-6">
@@ -67,11 +41,13 @@ export default async function Page({ params }: { params: { itemId: string } }) {
       <Separator className="my-6" />
       <div className="flex flex-col space-y-4 lg:flex-row lg-space-x-12 lg:space-y-0">
         <div className="flex-1 w-3/5 mx-6 py-2 lg:max-w-2xl">
-          <UpdateItemForm item={item} />
+          <UpdateItemForm item={JSON.stringify(item)} />
         </div>
         <div className="m-1">
           <ItemImage imageUrl={"1"} />
-          <QRCodeImage item={item} qrCodeUrl={qrCodeUrl} />
+          {item?.barcode && (
+            <QRCodeImage item={JSON.stringify(item)} qrCodeUrl={item.barcode} />
+          )}
         </div>
       </div>
     </div>
