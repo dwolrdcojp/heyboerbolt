@@ -64,7 +64,6 @@ export async function createItem(prevState: PrevState, formData: FormData) {
     const session = await auth();
     const userId = session?.user?.name;
 
-    console.log(formData.get("value"));
     const parsed = itemFormSchema.parse({
       createdBy: userId as string,
       createdAt: new Date(Date.now()) as Date,
@@ -80,8 +79,6 @@ export async function createItem(prevState: PrevState, formData: FormData) {
       tags: formData.get("tags") || "",
       notes: formData.get("notes") || "",
     });
-
-    console.log(parsed.value);
 
     const resp = await prisma.item.create({
       data: parsed,
