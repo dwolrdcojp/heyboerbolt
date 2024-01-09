@@ -30,9 +30,8 @@ export default async function Page({ params }: { params: { itemId: string } }) {
   return (
     <div className="space-y-6 m-6">
       <div>
-        <h3 className="text-lg font-medium">
-          Inventory Item: {item?.name}
-          {" - "} {item?.sku}
+        <h3 className="text-lg font-medium capitalize">
+          Inventory Item: {`${item?.name}`}
         </h3>
         <p className="text-sm text-muted-foreground">
           Update the inventory status of this item.

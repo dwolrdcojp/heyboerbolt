@@ -25,7 +25,11 @@ const itemFormSchema = z.object({
 export type ItemFormValues = z.infer<typeof itemFormSchema>;
 
 export const getItems = cache(async () => {
-  const items = await prisma.item.findMany();
+  const items = await prisma.item.findMany({
+    orderBy: {
+      createdAt: "asc",
+    },
+  });
   return items;
 });
 

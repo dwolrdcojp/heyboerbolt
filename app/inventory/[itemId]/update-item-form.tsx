@@ -125,7 +125,11 @@ export default function UpdateItemForm({ item }) {
               <FormItem>
                 <FormLabel>SKU</FormLabel>
                 <FormControl>
-                  <Input placeholder="HBB1T2S1C3" {...field} />
+                  <Input
+                    className="uppercase"
+                    placeholder="HBB1T2S1C3"
+                    {...field}
+                  />
                 </FormControl>
                 <FormDescription>
                   This is an optional code for barcodes.

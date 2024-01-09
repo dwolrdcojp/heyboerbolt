@@ -28,7 +28,14 @@ export default async function Inventory() {
     <div className="grid p-4">
       <div className="grid grid-cols-2 my-4">
         <div className="cols-1">
-          <h1 className=""> Inventory </h1>
+          <div>
+            <h2 className="text-3xl px-1 font-bold tracking-tight">
+              Inventory
+            </h2>
+            <p className="px-1 text-muted-foreground">
+              View and adjust current inventory items.
+            </p>
+          </div>
         </div>
 
         <div className="cols-1 justify-self-end">
@@ -41,15 +48,17 @@ export default async function Inventory() {
       {items &&
         items.map((item, index) => {
           return (
-            <div>
+            <div key={index}>
               <Card key={index} className="my-2 hover:bg-secondary">
                 <div className="grid grid-cols-4  p-0">
                   <div className="relative col-span-3 p-0">
                     <CardHeader>
-                      <CardTitle className="hover:text-destructive">
+                      <CardTitle className="hover:text-destructive capitalize">
                         <Link href={`/inventory/${item.id}`}>{item.name}</Link>
                       </CardTitle>
-                      <CardDescription>SKU: {item?.sku}</CardDescription>
+                      <CardDescription className="uppercase">
+                        SKU: {item?.sku}
+                      </CardDescription>
                     </CardHeader>
                     <CardContent key={index}>
                       <div className="grid grid-cols-3 items-center gap-4">
@@ -79,11 +88,14 @@ export default async function Inventory() {
                         </div>
                       </div>
                     </CardContent>
-                    <CardFooter>
+                    <CardFooter key={index}>
                       Tags:{" "}
-                      {item.tags?.split(",").map((tag) => {
+                      {item.tags?.split(",").map((tag, idx) => {
                         return (
-                          <span className="p-1 bg-secondary mx-1 border rounded">
+                          <span
+                            key={idx}
+                            className="p-1 bg-secondary mx-1 border rounded"
+                          >
                             {tag}
                           </span>
                         );

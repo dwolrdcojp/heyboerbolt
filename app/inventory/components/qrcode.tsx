@@ -72,7 +72,7 @@ export function QRCodeImage({ item, qrCodeUrl }) {
       <div id="printableCard">
         <Card id="card" className="card m-2">
           <CardHeader>
-            <CardTitle id="card-title" className="">
+            <CardTitle id="card-title" className="capitalize">
               Item: {parsedItem.name}
             </CardTitle>
             <CardDescription>Type: {parsedItem.type}</CardDescription>
@@ -87,7 +87,9 @@ export function QRCodeImage({ item, qrCodeUrl }) {
             />
           </CardContent>
           <CardFooter>
-            SKU: {parsedItem.sku ? parsedItem.sku : parsedItem.id}
+            <div key="sku" className="uppercase">
+              SKU: {parsedItem.sku ? parsedItem.sku : parsedItem.id}
+            </div>
           </CardFooter>
         </Card>
       </div>

@@ -117,7 +117,11 @@ export default function ItemForm() {
               <FormItem>
                 <FormLabel>SKU</FormLabel>
                 <FormControl>
-                  <Input placeholder="HBB1T2S1C3" {...field} />
+                  <Input
+                    className="uppercase"
+                    placeholder="HBB1T2S1C3"
+                    {...field}
+                  />
                 </FormControl>
                 <FormDescription>
                   This is an optional code for barcodes.
@@ -175,8 +179,13 @@ export default function ItemForm() {
                     placeholder="$100.00"
                     defaultValue={field.value}
                     onValueChange={(value, name) => field.onChange(value)}
+                    allowDecimals={true}
+                    allowNegativeValue={false}
                     decimalsLimit={2}
+                    decimalScale={2}
                     fixedDecimalLength={2}
+                    maxLength={9}
+                    //fixedDecimalLength={2}
                     onBlur={field.onBlur}
                     prefix="$"
                     ref={field.ref}
