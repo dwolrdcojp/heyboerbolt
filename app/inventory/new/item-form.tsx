@@ -26,7 +26,7 @@ import { StyledCurrencyInput } from "../components/styled-currency-input";
 
 const itemFormSchema = z.object({
   name: z.string().min(2).max(50),
-  sku: z.string().min(2).max(50).optional(),
+  sku: z.string().optional(),
   quantity: z.coerce.number().min(1),
   minLevel: z.coerce.number().optional(),
   value: z.coerce.number(),
