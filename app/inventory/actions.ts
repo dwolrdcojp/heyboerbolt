@@ -115,3 +115,44 @@ export async function createItem(prevState: PrevState, formData: FormData) {
     revalidatePath("/inventory");
   }
 }
+
+export async function adjustItem(itemId: string, newQuantity: number) {
+  try {
+    const session = await auth();
+    const userId = session?.user?.name;
+
+    const parsed = {
+      updatedBy: userId as string,
+      updatedAt: new Date(Date.now()) as Date,
+      name: undefined,
+      sku: undefined,
+      quantity: newQuantity as number,
+      minLevel: undefined,
+      value: undefined,
+      location: undefined,
+      type: undefined,
+      tags: undefined,
+      notes: undefined,
+    };
+
+    const resp = await prisma.item.update({
+      where: { id: itemId as string },
+      data: parsed,
+    });
+
+    return {
+      message: `Successfully updated ${resp.name}`,
+    };
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      console.log(e);
+      return { message: `Server Error: Failed to update: ${e.message}` };
+    } else {
+      console.log(e);
+      return { message: "Unknown Server Error: Failed to update." };
+    }
+  } finally {
+    revalidatePath(`/inventory/${itemId}`);
+    revalidatePath("/inventory");
+  }
+}

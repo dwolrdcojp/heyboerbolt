@@ -22,6 +22,7 @@ import { useFormState } from "react-dom";
 import { updateItem } from "./actions";
 import Link from "next/link";
 import { StyledCurrencyInput } from "../components/styled-currency-input";
+import type { Item } from "@prisma/client";
 
 const itemFormSchema = z.object({
   name: z.string().min(2).max(50),

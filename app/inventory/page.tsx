@@ -21,9 +21,12 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { formatCurrency } from "../utils/functions";
+import { Minus, Plus } from "lucide-react";
+import { AdjustButton } from "./components/adjust-button";
+import type { Item } from "@prisma/client";
 
 export default async function Inventory() {
-  const items = await getItems();
+  const items: Item[] = (await getItems()) as Item[];
   return (
     <div className="grid p-4">
       <div className="grid grid-cols-2 my-4">
@@ -100,35 +103,13 @@ export default async function Inventory() {
                           </span>
                         );
                       })}
-                      <Drawer>
-                        <DrawerTrigger asChild>
-                          <div className="absolute right-4 bottom-4">
-                            <Button>Adjust +/-</Button>
-                          </div>
-                        </DrawerTrigger>
-                        <DrawerContent>
-                          <DrawerHeader>
-                            <DrawerTitle>
-                              Are you sure absolutely sure?
-                            </DrawerTitle>
-                            <DrawerDescription>
-                              This action cannot be undone.
-                            </DrawerDescription>
-                          </DrawerHeader>
-                          <DrawerFooter>
-                            <Button>Submit</Button>
-                            <DrawerClose>
-                              <Button variant="outline">Cancel</Button>
-                            </DrawerClose>
-                          </DrawerFooter>
-                        </DrawerContent>
-                      </Drawer>
+                      <AdjustButton itemJSON={JSON.stringify(item)} />
                     </CardFooter>
                   </div>
                   <div className="cols-1 p-0 h-300 w-300">
                     <Image
                       className="border-0 rounded"
-                      src={`/item-${index + 1}.jpg`}
+                      src={`/item-${2}.jpg`}
                       width={300}
                       height={300}
                       alt="item"
