@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "../utils/auth";
 import { cache } from "react";
 import QRCode from "qrcode";
+import { getProtocol } from "../utils/functions";
 
 const itemFormSchema = z.object({
   createdBy: z.string(),
@@ -89,7 +90,9 @@ export async function createItem(prevState: PrevState, formData: FormData) {
     });
 
     const qrCodeUrlData = await generateQR(
-      `${process.env.NEXT_PUBLIC_VERCEL_URL}/inventory/${resp.id}`,
+      `${getProtocol()}${process.env.NEXT_PUBLIC_VERCEL_URL}/inventory/${
+        resp.id
+      }`,
     );
 
     const updateResp = await prisma.item.update({

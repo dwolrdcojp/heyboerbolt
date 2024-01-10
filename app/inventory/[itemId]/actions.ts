@@ -4,6 +4,7 @@ import * as z from "zod";
 import { revalidatePath } from "next/cache";
 import { auth } from "../..//utils/auth";
 import { cache } from "react";
+import { redirect } from "next/navigation";
 
 const itemFormSchema = z.object({
   updatedBy: z.string().optional(),
@@ -59,5 +60,32 @@ export async function updateItem(prevState: PrevState, formData: FormData) {
       console.log(e);
       return { message: "Unknown Server Error: Failed to update." };
     }
+  }
+}
+
+export async function deleteItem(itemId: string) {
+  try {
+    const session = await auth();
+    const userId = session?.user?.name;
+
+    const resp = await prisma.item.delete({
+      where: { id: itemId },
+    });
+
+    return {
+      message: `Successfully updated ${resp.name}`,
+    };
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      console.error(e);
+      return { message: `Server Error: Failed to delete ${e.message}` };
+    } else {
+      console.error(e);
+      return { message: "Unkown Server Error: Failed to delete" };
+    }
+  } finally {
+    redirect("/inventory");
+    revalidatePath(`/inventory/${itemId}`);
+    revalidatePath("/inventory");
   }
 }

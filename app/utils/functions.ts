@@ -1,3 +1,8 @@
+// Determine the protocol based on the environment
+export function getProtocol() {
+  return process.env.NODE_ENV === "production" ? "https://" : "http://";
+}
+
 export function formatCurrency(value: number | string | null): string {
   if (value == null) return "";
 
