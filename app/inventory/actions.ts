@@ -90,7 +90,7 @@ export async function createItem(prevState: PrevState, formData: FormData) {
     });
 
     const qrCodeUrlData = await generateQR(
-      `${getProtocol()}${process.env.NEXT_PUBLIC_VERCEL_URL}/inventory/${
+      `${getProtocol()}${process.env.HEYBOERBOLT_VERCEL_APP_URL}/inventory/${
         resp.id
       }`,
     );
@@ -100,7 +100,6 @@ export async function createItem(prevState: PrevState, formData: FormData) {
       data: { barcode: qrCodeUrlData as string },
     });
 
-    revalidatePath("/inventory");
     return {
       message: `Successfully added ${resp.name}`,
     };
@@ -112,5 +111,7 @@ export async function createItem(prevState: PrevState, formData: FormData) {
       console.log(e);
       return { message: "Unknown Server Error: Failed to create." };
     }
+  } finally {
+    revalidatePath("/inventory");
   }
 }

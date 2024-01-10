@@ -47,8 +47,6 @@ export async function updateItem(prevState: PrevState, formData: FormData) {
       data: parsed,
     });
 
-    revalidatePath(`/inventory/${itemId}`);
-    revalidatePath("/inventory");
     return {
       message: `Successfully updated ${resp.name}`,
     };
@@ -60,6 +58,10 @@ export async function updateItem(prevState: PrevState, formData: FormData) {
       console.log(e);
       return { message: "Unknown Server Error: Failed to update." };
     }
+  } finally {
+    const itemId = formData.get("itemId") as string;
+    revalidatePath(`/inventory/${itemId}`);
+    revalidatePath("/inventory");
   }
 }
 
